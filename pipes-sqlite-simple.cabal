@@ -19,7 +19,7 @@ source-repository head
   location: https://github.com/nkpart/pipes-sqlite-simple
 
 library
-  exposed-modules:   Pipes.Sqlite
+  exposed-modules:   Pipes.SQLite
   -- other-modules:
   -- other-extensions:
   ghc-options:       -Wall

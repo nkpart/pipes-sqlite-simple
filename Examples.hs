@@ -6,7 +6,7 @@ import qualified Database.SQLite.Simple as SQL
 import           Pipes as P
 import           Pipes.Prelude as P
 import           Pipes.Safe
-import           Pipes.Sqlite
+import           Pipes.SQLite
 
 -- EXAMPLE TIME
 newtype Widget = Widget Int deriving Show
@@ -19,13 +19,13 @@ printSum = Prelude.print
 
 main :: IO ()
 main = do
-  conn <- SQL.open "trip_productions.sqlite"
-  SQL.execute_ conn (SQL.Query ("DROP TABLE wats"))
+  conn <- SQL.open "example.sqlite"
+  _ <- try $ SQL.execute_ conn (SQL.Query "DROP TABLE wats") :: IO (Either SomeException ())
   SQL.execute_ conn (SQL.Query "CREATE TABLE wats (wat INTEGER)")
   runSafeT . runEffect $ do
-    ((queryP_ conn "select 1 + 1") >-> P.take 5) `for` (liftIO . printSum)
-    ((queryP conn "select 1 + ?" (SQL.Only (5::Int))) >-> P.take 5) `for` (liftIO . printSum)
-    each [(1::Int)..] >-> P.map SQL.Only >-> P.take 5 >-> executeP conn "INSERT INTO wats (wat) VALUES (?)"
+    (query_ conn "select 1 + 1" >-> P.take 5) `for` (liftIO . printSum)
+    (query conn "select 1 + ?" (SQL.Only (5::Int)) >-> P.take 5) `for` (liftIO . printSum)
+    each [(1::Int)..] >-> P.map SQL.Only >-> P.take 5 >-> execute conn "INSERT INTO wats (wat) VALUES (?)"
     liftIO . putStrLn $ "Checking those wats"
-    runEffect $ queryP_ conn "select wat from wats" `for` (liftIO . printSum)
+    runEffect $ query_ conn "select wat from wats" `for` (liftIO . printSum)
   SQL.close conn
