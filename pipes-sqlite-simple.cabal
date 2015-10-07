@@ -3,10 +3,10 @@
 
 name:                pipes-sqlite-simple
 version:             0.2
-synopsis:
--- description:
+synopsis:            Functions that smash Pipes and sqlite-simple together
+description:         Functions that smash Pipes and sqlite-simple together
 license: BSD3
---license-file:        LICENSE
+license-file:        LICENSE
 author:              Nick Partridge
 maintainer:          nkpart@gmail.com
 -- copyright:
